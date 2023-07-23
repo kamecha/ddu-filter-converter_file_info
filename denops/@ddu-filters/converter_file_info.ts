@@ -35,7 +35,8 @@ export class Filter extends BaseFilter<Params> {
               args.denops.meta.platform !== "windows"
                 ? fileInfoToPermission(file_info)
                 : "",
-            );
+            )
+            .replaceAll("%S", fileInfoToSize(file_info));
           return {
             ...item,
             display: text,
@@ -45,7 +46,7 @@ export class Filter extends BaseFilter<Params> {
   }
   params(): Params {
     return {
-      format: "%D\t%T%P",
+      format: "%D\t%T%P %S",
     };
   }
 }
@@ -82,4 +83,8 @@ function fileInfoToType(file_info: Deno.FileInfo): string {
     : file_info.isSymlink
     ? "l"
     : "?";
+}
+
+function fileInfoToSize(file_info: Deno.FileInfo): string {
+  return file_info.size.toString();
 }
