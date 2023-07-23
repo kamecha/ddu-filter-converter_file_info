@@ -19,9 +19,22 @@ export class Filter extends BaseFilter<Params> {
   }): Promise<DduItem[]> {
     return Promise.resolve(
       args.items
+        .filter((item: DduItem) => {
+          return item.action !== undefined &&
+            (item.action as ActionData).path !== undefined;
+        })
         .map((item: DduItem) => {
+          const action = item.action! as ActionData;
+          const file_path = action.path!;
+          const file_info: Deno.FileInfo = Deno.statSync(file_path);
           const text: string = args.filterParams.format
             .replaceAll("%D", item.display ?? item.word)
+            .replaceAll(
+              "%P",
+              args.denops.meta.platform !== "windows"
+                ? fileInfoToPermission(file_info)
+                : "",
+            );
           return {
             ...item,
             display: text,
@@ -31,7 +44,31 @@ export class Filter extends BaseFilter<Params> {
   }
   params(): Params {
     return {
-      format: "%D",
+      format: "%D\t%P",
     };
   }
+}
+
+// 8進数表記のpermissionを文字列変換
+// linux
+// 741 -> rwxr----x
+// NOTE: Deno.FileInfo.modeはまだUNSTABLEなので、windowsでは動かない
+function permissionToString(permission: string): string {
+  const ret: string[] = [];
+  // permission stinrg -> array
+  for (const c of permission) {
+    const perNum = parseInt(c, 8);
+    const read = (perNum >> 2) & 1;
+    const write = (perNum >> 1) & 1;
+    const execute = perNum & 1;
+    ret.push(`${read ? "r" : "-"}${write ? "w" : "-"}${execute ? "x" : "-"}`);
+  }
+  return ret.join("");
+}
+
+function fileInfoToPermission(file_info: Deno.FileInfo): string {
+  if (file_info.mode === null) {
+    return "?????????";
+  }
+  return permissionToString(file_info.mode.toString(8).slice(-3));
 }
