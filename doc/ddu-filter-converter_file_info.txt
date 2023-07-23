@@ -1,0 +1,70 @@
+*ddu-filter-converter_file_info.txt*	converter for file info
+
+Author: kamecha
+License: MIT license
+
+CONTENTS				*ddu-filter-converter_file_info-contents*
+
+Introduction		|ddu-filter-converter_file_info-introduction|
+Install			|ddu-filter-converter_file_info-install|
+Examples		|ddu-filter-converter_file_info-examples|
+Params			|ddu-filter-converter_file_info-params|
+
+
+==============================================================================
+INTRODUCTION				*ddu-filter-converter_file_info-introduction*
+
+This filter shows file info.
+
+
+==============================================================================
+INSTALL					*ddu-filter-converter_file_info-install*
+
+Please install both "ddu.vim" and "denops.vim".
+
+https://github.com/Shougo/ddu.vim
+https://github.com/vim-denops/denops.vim
+
+==============================================================================
+EXAMPLES				*ddu-filter-converter_file_info-examples*
+
+>
+	call ddu#start(#{
+		\	sources: [#{
+		\		name: 'file',
+		\		options: #{
+		\			converters: ['converter_file_info']
+		\		}
+		\	}],
+		\	filterParams: #{
+		\		converter_file_info: #{
+		\			format: '%D\t%P'
+		\		}
+		\	}
+		\})
+<
+
+==============================================================================
+PARAMS					*ddu-filter-converter_file_info-params*
+
+				*ddu-filter-converter_file_info-param-format*
+format 		(string)
+		text format.
+		these info is based on Deno.FileInfo.
+		The following format specifiers are supported:
+		
+		"%D": item before converted
+		"%T": file type
+			File: "-"
+			Directory: "d"
+			Link: "l"
+		"%P": permission (Linux-like format)
+			Read: "r"
+			Write: "w"
+			execute: "x"
+
+		Default: "%D\t%T%P"
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:noet:fen:noet:
+
