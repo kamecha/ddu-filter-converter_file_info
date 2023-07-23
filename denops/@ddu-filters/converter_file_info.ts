@@ -29,6 +29,7 @@ export class Filter extends BaseFilter<Params> {
           const file_info: Deno.FileInfo = Deno.statSync(file_path);
           const text: string = args.filterParams.format
             .replaceAll("%D", item.display ?? item.word)
+            .replaceAll("%T", fileInfoToType(file_info))
             .replaceAll(
               "%P",
               args.denops.meta.platform !== "windows"
@@ -44,7 +45,7 @@ export class Filter extends BaseFilter<Params> {
   }
   params(): Params {
     return {
-      format: "%D\t%P",
+      format: "%D\t%T%P",
     };
   }
 }
@@ -71,4 +72,14 @@ function fileInfoToPermission(file_info: Deno.FileInfo): string {
     return "?????????";
   }
   return permissionToString(file_info.mode.toString(8).slice(-3));
+}
+
+function fileInfoToType(file_info: Deno.FileInfo): string {
+  return file_info.isFile
+    ? "-"
+    : file_info.isDirectory
+    ? "d"
+    : file_info.isSymlink
+    ? "l"
+    : "?";
 }
