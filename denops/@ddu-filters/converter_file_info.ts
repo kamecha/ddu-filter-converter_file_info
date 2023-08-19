@@ -26,7 +26,7 @@ export class Filter extends BaseFilter<Params> {
         .map((item: DduItem) => {
           const action = item.action! as ActionData;
           const file_path = action.path!;
-          const file_info: Deno.FileInfo = Deno.statSync(file_path);
+          const file_info: Deno.FileInfo = Deno.lstatSync(file_path);
           const text: string = args.filterParams.format
             .replaceAll("%D", item.display ?? item.word)
             .replaceAll("%T", fileInfoToType(file_info))
