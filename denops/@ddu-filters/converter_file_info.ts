@@ -36,7 +36,10 @@ export class Filter extends BaseFilter<Params> {
                 ? fileInfoToPermission(file_info)
                 : "",
             )
-            .replaceAll("%S", fileInfoToSize(file_info));
+            .replaceAll("%S", fileInfoToSize(file_info))
+            .replaceAll("%M", fileInfoToLastModificationTime(file_info))
+            .replaceAll("%A", fileInfoToLastAccessTime(file_info))
+            .replaceAll("%C", fileInfoToCreationTime(file_info));
           return {
             ...item,
             display: text,
@@ -87,4 +90,16 @@ function fileInfoToType(file_info: Deno.FileInfo): string {
 
 function fileInfoToSize(file_info: Deno.FileInfo): string {
   return file_info.size.toString();
+}
+
+function fileInfoToLastModificationTime(file_info: Deno.FileInfo): string {
+  return file_info.mtime?.toLocaleDateString() ?? "";
+}
+
+function fileInfoToLastAccessTime(file_info: Deno.FileInfo): string {
+  return file_info.atime?.toLocaleDateString() ?? "";
+}
+
+function fileInfoToCreationTime(file_info: Deno.FileInfo): string {
+  return file_info.birthtime?.toLocaleDateString() ?? "";
 }
