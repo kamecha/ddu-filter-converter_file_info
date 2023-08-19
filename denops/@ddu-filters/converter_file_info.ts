@@ -49,7 +49,7 @@ export class Filter extends BaseFilter<Params> {
   }
   params(): Params {
     return {
-      format: "%D\t%T%P %S\t%M %A %C",
+      format: "%D\t%T%P %S\t%M",
     };
   }
 }
