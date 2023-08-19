@@ -76,12 +76,12 @@ function fileInfoToPermission(file_info: Deno.FileInfo): string {
 }
 
 function fileInfoToType(file_info: Deno.FileInfo): string {
-  return file_info.isFile
-    ? "-"
+  return file_info.isSymlink
+    ? "l"
     : file_info.isDirectory
     ? "d"
-    : file_info.isSymlink
-    ? "l"
+    : file_info.isFile
+    ? "-"
     : "?";
 }
 
